@@ -1,0 +1,41 @@
+# ── ISP (RAW8 -> RGB565 conversion) ───────────────────────────────────────
+# The SC2356 only outputs raw Bayer data (RAW8). Requesting RGB565 directly
+# from the CSI capture device fails ("input widthxheight is not supported")
+# unless the ISP pipeline is enabled to do the RAW8->RGB565 conversion in
+# hardware. This was missing entirely — confirmed against Espressif's
+# esp_video README, which documents ISP as a separate, non-default gate.
+CONFIG_ESP_VIDEO_ENABLE_ISP_VIDEO_DEVICE=y
+
+# ── Camera sensor selection ───────────────────────────────────────────────
+# The Tab5's onboard camera is an SC2356, supported by the SC202CS driver
+# (same family/register set — there is no separate "SC2356" symbol).
+CONFIG_CAMERA_SC202CS=y
+CONFIG_CAMERA_SC202CS_AUTO_DETECT_MIPI_INTERFACE_SENSOR=y
+
+# All other sensor drivers explicitly disabled. NOTE: plain "=n" lines are
+# NOT sufficient to override a Kconfig bool that defaults to y — confirmed
+# on real hardware (CONFIG_CAMERA_GC2145=n in this file was ignored and the
+# merged sdkconfig still showed CONFIG_CAMERA_GC2145=y). Kconfig's actual
+# override syntax for disabling such an option is the comment form below.
+# CONFIG_CAMERA_IMX500 is not set
+# CONFIG_CAMERA_GC2145 is not set
+# CONFIG_CAMERA_MIRA220 is not set
+# CONFIG_CAMERA_OS02N10 is not set
+# CONFIG_CAMERA_OS04C10 is not set
+# CONFIG_CAMERA_OV2710 is not set
+# CONFIG_CAMERA_OV5640 is not set
+# CONFIG_CAMERA_OV5645 is not set
+# CONFIG_CAMERA_OV5647 is not set
+# CONFIG_CAMERA_OV9281 is not set
+# CONFIG_CAMERA_PIVARIETY is not set
+# CONFIG_CAMERA_SC035HGS is not set
+# CONFIG_CAMERA_SC2336 is not set
+# CONFIG_CAMERA_STI2250 is not set
+
+# ── mbedTLS PSRAM allocation ──────────────────────────────────────────────
+# The gateway holds a persistent TLS context that fragments internal SRAM,
+# leaving only ~31KB contiguous — below the ~36KB mbedTLS needs for a second
+# handshake. Prefer PSRAM for dynamic allocations so TLS contexts don't
+# compete for internal SRAM.
+CONFIG_SPIRAM_USE_MALLOC=y
+CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL=16384

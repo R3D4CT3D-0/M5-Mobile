@@ -1,0 +1,9 @@
+# esp_cam_sensor is the meta-package that contains all sensor drivers.
+# It is a transitive dependency of esp_video anyway, so listing it
+# explicitly here just lets us pin the version.
+# Sensor selection (only SC2336 enabled) is controlled via sdkconfig.defaults
+# so we don't compile in the 14 other sensor drivers that produce the
+# "Get sensor ID failed" probe spam at boot.
+dependencies:
+  espressif/esp_video: ">=1.0.0"
+  espressif/esp_cam_sensor: "*"
