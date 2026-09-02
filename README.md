@@ -35,7 +35,7 @@
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/your-username/M5-Mobile.git](https://github.com/your-username/M5-Mobile.git)
+   git clone https://github.com/R3D4CT3D-0/M5-Mobile.git
    cd M5-Mobile
    ```
 
